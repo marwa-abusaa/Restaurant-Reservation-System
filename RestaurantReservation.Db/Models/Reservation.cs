@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace RestaurantReservation.Db.Models;
 
 public class Reservation
