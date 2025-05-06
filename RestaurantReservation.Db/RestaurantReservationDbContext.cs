@@ -17,6 +17,7 @@ public class RestaurantReservationDbContext : DbContext
     public DbSet<Restaurant> Restaurants { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<ReservationDetails> ReservationDetails { get; set; }
+    public DbSet<EmployeeWithRestaurantDetails> EmployeeWithRestaurantDetails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,6 +61,7 @@ public class RestaurantReservationDbContext : DbContext
         modelBuilder.SeedDatabase();
 
         modelBuilder.Entity<ReservationDetails>().HasNoKey().ToView("View_ReservationDetails");
+        modelBuilder.Entity<EmployeeWithRestaurantDetails>().HasNoKey().ToView("View_EmployeesWithRestaurantDetails");
 
     }
 
