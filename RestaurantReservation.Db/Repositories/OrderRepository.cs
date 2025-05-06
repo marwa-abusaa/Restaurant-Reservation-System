@@ -21,4 +21,16 @@ public class OrderRepository : Repository<Employee>
                         .ThenInclude(mi => mi.MenuItem)
                     .ToListAsync();
     }
+
+    public async Task<decimal> CalculateAverageOrderAmount(int EmployeeId)
+    {
+        var orders = await _context.Orders
+                    .Where(o => o.EmployeeId == EmployeeId)
+                    .ToListAsync();
+
+        if (orders.Count == 0) 
+            return 0;
+        else 
+            return orders.Average(o => o.TotalAmount);
+    }
 }
