@@ -109,9 +109,8 @@ namespace RestaurantReservation.Db.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
@@ -128,7 +127,7 @@ namespace RestaurantReservation.Db.Migrations
                             EmployeeId = 1,
                             FirstName = "Mark",
                             LastName = "Johnson",
-                            Position = "Manager",
+                            Position = 4,
                             RestaurantId = 1
                         },
                         new
@@ -136,7 +135,7 @@ namespace RestaurantReservation.Db.Migrations
                             EmployeeId = 2,
                             FirstName = "Sara",
                             LastName = "Williams",
-                            Position = "Waiter",
+                            Position = 3,
                             RestaurantId = 2
                         },
                         new
@@ -144,7 +143,7 @@ namespace RestaurantReservation.Db.Migrations
                             EmployeeId = 3,
                             FirstName = "Tom",
                             LastName = "Lee",
-                            Position = "Chef",
+                            Position = 2,
                             RestaurantId = 1
                         },
                         new
@@ -152,7 +151,7 @@ namespace RestaurantReservation.Db.Migrations
                             EmployeeId = 4,
                             FirstName = "Nancy",
                             LastName = "Davis",
-                            Position = "Waiter",
+                            Position = 3,
                             RestaurantId = 3
                         },
                         new
@@ -160,7 +159,7 @@ namespace RestaurantReservation.Db.Migrations
                             EmployeeId = 5,
                             FirstName = "Jake",
                             LastName = "Wilson",
-                            Position = "Manager",
+                            Position = 4,
                             RestaurantId = 2
                         });
                 });
