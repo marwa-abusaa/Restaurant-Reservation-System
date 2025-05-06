@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RestaurantReservation.Db.Models;
+using RestaurantReservation.Db.Seeding;
 
 namespace RestaurantReservation.Db;
 
@@ -19,39 +20,42 @@ public class RestaurantReservationDbContext : DbContext
     {
         modelBuilder.Entity<Reservation>()
             .HasOne(r => r.Table)
-            .WithMany()
+            .WithMany(t => t.Reservations)
             .HasForeignKey(r => r.TableId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Reservation>()
             .HasOne(r => r.Customer)
-            .WithMany()
+            .WithMany(c => c.Reservations)
             .HasForeignKey(r => r.CustomerId)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Reservation>()
             .HasOne(r => r.Restaurant)
-            .WithMany()
+            .WithMany(rs => rs.Reservations)
             .HasForeignKey(r => r.RestaurantId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Order>()
             .HasOne(o => o.Reservation)
-            .WithMany()
+            .WithMany(r => r.Orders)
             .HasForeignKey(o => o.ReservationId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Order>()
             .HasOne(o => o.Employee)
-            .WithMany()
+            .WithMany(e => e.Orders)
             .HasForeignKey(o => o.EmployeeId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<OrderItem>()
             .HasOne(oi => oi.Order)
-            .WithMany()
+            .WithMany(o => o.OrderItems)
             .HasForeignKey(oi => oi.OrderId)
             .OnDelete(DeleteBehavior.Restrict);
+
+
+        modelBuilder.SeedDatabase();
 
     }
 
