@@ -1,4 +1,5 @@
 ﻿using RestaurantReservation.Db.Models;
+using RestaurantReservation.Db.Models.Enum;
 
 namespace RestaurantReservation.Db.Seeding;
 
@@ -20,11 +21,11 @@ public class DataSeeding
     {
         return new Employee[]
         {
-                new Employee { EmployeeId = 1, RestaurantId = 1, FirstName = "Mark", LastName = "Johnson", Position = "Manager" },
-                new Employee { EmployeeId = 2, RestaurantId = 2, FirstName = "Sara", LastName = "Williams", Position = "Waiter" },
-                new Employee { EmployeeId = 3, RestaurantId = 1, FirstName = "Tom", LastName = "Lee", Position = "Chef" },
-                new Employee { EmployeeId = 4, RestaurantId = 3, FirstName = "Nancy", LastName = "Davis", Position = "Waiter" },
-                new Employee { EmployeeId = 5, RestaurantId = 2, FirstName = "Jake", LastName = "Wilson", Position = "Manager" },
+                new Employee { EmployeeId = 1, RestaurantId = 1, FirstName = "Mark", LastName = "Johnson", Position = EmployeePosition.Manager },
+                new Employee { EmployeeId = 2, RestaurantId = 2, FirstName = "Sara", LastName = "Williams", Position = EmployeePosition.Waiter },
+                new Employee { EmployeeId = 3, RestaurantId = 1, FirstName = "Tom", LastName = "Lee", Position = EmployeePosition.Chef },
+                new Employee { EmployeeId = 4, RestaurantId = 3, FirstName = "Nancy", LastName = "Davis", Position = EmployeePosition.Waiter },
+                new Employee { EmployeeId = 5, RestaurantId = 2, FirstName = "Jake", LastName = "Wilson", Position = EmployeePosition.Manager },
         };
     }
 
