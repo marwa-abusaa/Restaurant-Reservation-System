@@ -2,7 +2,7 @@
 
 namespace RestaurantReservation.Db.Repositories
 {
-    class TableRepository : Repository<Table>
+    public class TableRepository : Repository<Table>
     {
         private RestaurantReservationDbContext _context;
 
