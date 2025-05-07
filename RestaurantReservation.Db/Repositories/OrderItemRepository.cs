@@ -2,7 +2,7 @@
 
 namespace RestaurantReservation.Db.Repositories;
 
-class OrderItemRepository : Repository<Employee>
+class OrderItemRepository : Repository<OrderItem>
 {
     private RestaurantReservationDbContext _context;
 

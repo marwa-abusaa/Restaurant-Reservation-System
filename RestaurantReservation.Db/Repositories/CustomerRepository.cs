@@ -3,7 +3,7 @@ using RestaurantReservation.Db.Models;
 
 namespace RestaurantReservation.Db.Repositories;
 
-public class CustomerRepository : Repository<Employee>
+public class CustomerRepository : Repository<Customer>
 {
     private RestaurantReservationDbContext _context;
 

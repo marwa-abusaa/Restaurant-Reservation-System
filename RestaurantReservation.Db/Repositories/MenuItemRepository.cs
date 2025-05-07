@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantReservation.Db.Repositories;
 
-public class MenuItemRepository : Repository<Employee>
+public class MenuItemRepository : Repository<MenuItem>
 {
     private RestaurantReservationDbContext _context;
 

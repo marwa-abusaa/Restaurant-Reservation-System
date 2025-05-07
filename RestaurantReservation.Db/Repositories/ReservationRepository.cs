@@ -5,7 +5,7 @@ using RestaurantReservation.Db.Models.Views;
 
 namespace RestaurantReservation.Db.Repositories;
 
-public class ReservationRepository : Repository<Employee>
+public class ReservationRepository : Repository<Reservation>
 {
     private RestaurantReservationDbContext _context;
 
