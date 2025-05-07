@@ -15,11 +15,11 @@ public class RestaurantRepository : Repository<Restaurant>
     public async Task<decimal> CalculateRestaurantRevenue(int restaurantId)
     {
 
-        var revenue = await _context
-        .Set<RevenueResult>()
-        .FromSqlRaw($"SELECT dbo.GetTotalRevenueByRestaurant({0}) AS TotalRevenue", restaurantId)
+        var result = await _context.Database
+        .SqlQuery<RevenueResult>($"SELECT dbo.fn_CalculateRestaurantRevenue({restaurantId}) AS TotalRevenue")
+        .AsNoTracking()
         .FirstOrDefaultAsync();
 
-        return revenue.TotalRevenue;
+        return result?.TotalRevenue ?? 0;
     }
 }
