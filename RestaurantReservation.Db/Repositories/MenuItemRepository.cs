@@ -1,7 +1,6 @@
 ﻿using RestaurantReservation.Db.Models;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace RestaurantReservation.Db.Repositories;
 
 public class MenuItemRepository : Repository<Employee>

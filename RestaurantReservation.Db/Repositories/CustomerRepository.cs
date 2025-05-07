@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RestaurantReservation.Db.Models.Enum;
-using RestaurantReservation.Db.Models.Views;
 using RestaurantReservation.Db.Models;
 
 namespace RestaurantReservation.Db.Repositories;
