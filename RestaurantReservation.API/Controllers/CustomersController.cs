@@ -39,6 +39,34 @@ public class CustomersController : ControllerBase
         return CreatedAtRoute("GetCustomer", new { id = addedCustomer.CustomerId }, createdCustomerReturn);
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<CustomerDto>> DeleteCustomer(int id)
+    {
+        var existingCustomer = await _customerRepository.GetById(id);
+        if(existingCustomer == null)
+        {
+            return NotFound();
+        }
+
+        await _customerRepository.DeleteById(id);
+        return NoContent();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<CustomerDto>> UpdateCustomer(int id, CustomerUpdateDto customerUpdateDto)
+    {
+        var existingCustomer = await _customerRepository.GetById(id);
+        if (existingCustomer == null)
+        {
+            return NotFound();
+        }
+
+        _mapper.Map(customerUpdateDto, existingCustomer);
+        await _customerRepository.Update(existingCustomer);
+
+        return NoContent();
+    }
+
     
 
 }
