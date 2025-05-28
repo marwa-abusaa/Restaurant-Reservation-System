@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantReservation.API.Models.Customers;
+using RestaurantReservation.Db.Models;
 using RestaurantReservation.Db.Repositories;
 
 namespace RestaurantReservation.API.Controllers;
@@ -18,7 +19,7 @@ public class CustomersController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("{id}")]   
+    [HttpGet("{id}", Name = "GetCustomer")]   
     public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
     {
         var customer = await _customerRepository.GetById(id);
@@ -26,6 +27,16 @@ public class CustomersController : ControllerBase
             return NotFound();
 
         return Ok(_mapper.Map<CustomerDto>(customer));
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<CustomerDto>> CreateCustomer(CustomerCreateDto customerCreateDto)
+    {
+        var customer = _mapper.Map<Customer>(customerCreateDto);
+        var addedCustomer = await _customerRepository.Create(customer);
+        var createdCustomerReturn = _mapper.Map<CustomerDto>(addedCustomer);
+
+        return CreatedAtRoute("GetCustomer", new { id = addedCustomer.CustomerId }, createdCustomerReturn);
     }
 
     
