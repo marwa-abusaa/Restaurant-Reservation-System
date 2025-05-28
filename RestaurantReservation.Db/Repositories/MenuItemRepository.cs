@@ -21,4 +21,9 @@ public class MenuItemRepository : Repository<MenuItem>
                     .Distinct()
                     .ToListAsync();
     }
+
+    public async Task<bool> IsMenuItemExists(int id)
+    {
+        return await _context.MenuItems.AnyAsync(m => m.MenuItemId == id);
+    }
 }
