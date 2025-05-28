@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantReservation.API.Models.Customers;
 using RestaurantReservation.Db.Models;
@@ -67,6 +68,27 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
-    
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PartiallyUpdateCustomer(int id, [FromBody] JsonPatchDocument<CustomerUpdateDto> patchDocument)
+    {
+        if (patchDocument == null)
+            return BadRequest();
+
+        var existingCustomer = await _customerRepository.GetById(id);
+        if (existingCustomer == null)
+            return NotFound();
+
+        var customerToPatch = _mapper.Map<CustomerUpdateDto>(existingCustomer);
+
+        patchDocument.ApplyTo(customerToPatch, ModelState);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        _mapper.Map(customerToPatch, existingCustomer);
+        await _customerRepository.Update(existingCustomer);
+
+        return NoContent();
+    }
 
 }
