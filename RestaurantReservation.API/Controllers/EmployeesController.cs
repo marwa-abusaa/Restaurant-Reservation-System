@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantReservation.API.Models.Customers;
 using RestaurantReservation.API.Models.Employees;
 using RestaurantReservation.Db.Models;
 using RestaurantReservation.Db.Repositories;
@@ -13,11 +12,13 @@ namespace RestaurantReservation.API.Controllers;
 public class EmployeesController : Controller
 {
     private EmployeeRepository _employeeRepository;
+    private RestaurantRepository _restaurantRepository;
     private readonly IMapper _mapper;
 
-    public EmployeesController(IMapper mapper, EmployeeRepository employeeRepository)
+    public EmployeesController(IMapper mapper, EmployeeRepository employeeRepository, RestaurantRepository restaurantRepository)
     {
         _employeeRepository = employeeRepository;
+        _restaurantRepository = restaurantRepository;
         _mapper = mapper;
     }
 
@@ -34,6 +35,10 @@ public class EmployeesController : Controller
     [HttpPost]
     public async Task<ActionResult<EmployeeDto>> CreateEmployee(EmployeeCreateDto employeeCreateDto)
     {
+        if (!await _restaurantRepository.IsRestaurantExists(employeeCreateDto.RestaurantId))
+        {
+            return NotFound(new { Message = "Restaurant not found." });
+        }
         var employee = _mapper.Map<Employee>(employeeCreateDto);
         var addedEmployee = await _employeeRepository.Create(employee);
         var createdEmployeeReturn = _mapper.Map<EmployeeDto>(addedEmployee);
@@ -62,6 +67,10 @@ public class EmployeesController : Controller
         {
             return NotFound();
         }
+        if (!await _restaurantRepository.IsRestaurantExists(employeeUpdateDto.RestaurantId))
+        {
+            return NotFound(new { Message = "Restaurant not found." });
+        }
 
         _mapper.Map(employeeUpdateDto, existingEmployee);
         await _employeeRepository.Update(existingEmployee);
@@ -85,6 +94,11 @@ public class EmployeesController : Controller
 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        if (!await _restaurantRepository.IsRestaurantExists(employeeToPatch.RestaurantId))
+        {
+            return NotFound(new { Message = "Restaurant not found." });
+        }
 
         _mapper.Map(employeeToPatch, existingEmployee);
         await _employeeRepository.Update(existingEmployee);
