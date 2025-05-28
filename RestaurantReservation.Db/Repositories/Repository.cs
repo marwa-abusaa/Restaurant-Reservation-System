@@ -13,10 +13,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _context = context;
         _dbSet = _context.Set<TEntity>();
     }
-    public async Task Create(TEntity model)
+    public async Task<TEntity> Create(TEntity model)
     {
         _dbSet.Add(model);
         await _context.SaveChangesAsync();
+        return model;
     }
 
     public async Task DeleteById(int id)
@@ -36,14 +37,8 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     public async Task<TEntity> GetById(int id)
     {
         var model = await _dbSet.FindAsync(id);
-        if (model != null)
-        {
-            return model;
-        }
-        else
-        {
-            throw new InvalidOperationException($"No record found with ID {id}");
-        }
+        
+        return model;       
     }
 
     public async Task Update(TEntity model)
