@@ -26,8 +26,16 @@ public class CustomersController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Gets all customers with pagination.
+    /// </summary>
+    /// <param name="pageNumber">The number of the page to retrieve.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <returns>A list of customer DTOs.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetCustomers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetCustomers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
     {
         if (pageNumber <= 0 || pageSize <= 0)
             return BadRequest("Page and pageSize must be greater than zero.");
@@ -50,8 +58,14 @@ public class CustomersController : ControllerBase
         return Ok(pagedResultDto);
     }
 
-
-    [HttpGet("{id}", Name = "GetCustomer")]   
+    /// <summary>
+    /// Retrieves a customer by their ID.
+    /// </summary>
+    /// <param name="id">The ID of the customer to retrieve.</param>
+    /// <returns> A customer DTO if found; otherwise, a 404 Not Found response.</returns>
+    [HttpGet("{id}", Name = "GetCustomer")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
     {
         var customer = await _customerRepository.GetById(id);
@@ -61,7 +75,15 @@ public class CustomersController : ControllerBase
         return Ok(_mapper.Map<CustomerDto>(customer));
     }
 
+
+    /// <summary>
+    /// Creates a new customer.
+    /// </summary>
+    /// <param name="customerCreateDto">The customer data to create.</param>
+    /// <returns>The created customer DTO.</returns>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CustomerDto>> CreateCustomer(CustomerCreateDto customerCreateDto)
     {
         var customer = _mapper.Map<Customer>(customerCreateDto);
@@ -71,7 +93,15 @@ public class CustomersController : ControllerBase
         return CreatedAtRoute("GetCustomer", new { id = addedCustomer.CustomerId }, createdCustomerReturn);
     }
 
+
+    /// <summary>
+    /// Deletes a customer by ID.
+    /// </summary>
+    /// <param name="id">The ID of the customer to delete.</param>
+    /// <returns>No content if successful; otherwise, a 404 Not Found response.</returns>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerDto>> DeleteCustomer(int id)
     {
         var existingCustomer = await _customerRepository.GetById(id);
@@ -84,7 +114,17 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
+
+    /// <summary>
+    /// Updates an existing customer by ID.
+    /// </summary>
+    /// <param name="id">The ID of the customer to update.</param>
+    /// <param name="customerUpdateDto">The updated customer data.</param>
+    /// <returns>No content if successful; otherwise, a 404 Not Found response.</returns>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<CustomerDto>> UpdateCustomer(int id, CustomerUpdateDto customerUpdateDto)
     {
         var existingCustomer = await _customerRepository.GetById(id);
@@ -99,7 +139,17 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
+
+    /// <summary>
+    /// Partially updates an existing customer by ID using a JSON patch document.
+    /// </summary>
+    /// <param name="id">The ID of the customer to update.</param>
+    /// <param name="patchDocument">The JSON patch document containing updates.</param>
+    /// <returns>No content if successful; otherwise, a 404 Not Found response.</returns>
     [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PartiallyUpdateCustomer(int id, [FromBody] JsonPatchDocument<CustomerUpdateDto> patchDocument)
     {
         if (patchDocument == null)
@@ -122,7 +172,14 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
+
+    /// <summary>
+    /// Retrieves all customers who have made reservations with a party size greater than the specified minimum.
+    /// </summary>
+    /// <param name="minPartySize">The minimum party size to filter reservations.</param>
+    /// <returns> A list of customer DTOs </returns>
     [HttpGet("reservations")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<CustomerDto>>> ListCustomersWithReservationsAbovePartySize([FromQuery] int minPartySize)
     {
         var customers = await _customerRepository.GetCustomersWithReservationsAbovePartySize(minPartySize);
