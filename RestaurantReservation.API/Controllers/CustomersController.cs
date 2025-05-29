@@ -27,7 +27,7 @@ public class CustomersController : ControllerBase
 
 
     [HttpGet]
-    public async Task<IActionResult> GetACustomers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetCustomers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         if (pageNumber <= 0 || pageSize <= 0)
             return BadRequest("Page and pageSize must be greater than zero.");
