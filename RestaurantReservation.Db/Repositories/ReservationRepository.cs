@@ -25,4 +25,9 @@ public class ReservationRepository : Repository<Reservation>
     {
         return await _context.ReservationDetails.ToListAsync();
     }
+
+    public async Task<bool> IsReservationExists(int id)
+    {
+        return await _context.Reservations.AnyAsync(e => e.ReservationId == id);
+    }
 }

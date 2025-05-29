@@ -33,4 +33,9 @@ public class OrderRepository : Repository<Order>
         else 
             return orders.Average(o => o.TotalAmount);
     }
+
+    public async Task<bool> IsOrderExists(int id)
+    {
+        return await _context.Orders.AnyAsync(o => o.OrderId == id);
+    }
 }
