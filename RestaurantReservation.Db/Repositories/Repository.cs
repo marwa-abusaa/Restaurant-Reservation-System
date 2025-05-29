@@ -46,4 +46,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _dbSet.Update(model);
         await _context.SaveChangesAsync();
     }
+
+    public IQueryable<TEntity> GetAll()
+    {
+        return _dbSet.AsQueryable();
+    }
 }
