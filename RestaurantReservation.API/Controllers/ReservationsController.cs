@@ -123,5 +123,23 @@ public class ReservationsController : Controller
         return Ok(_mapper.Map<IEnumerable<ReservationDto>>(reservations));
     }
 
+    [HttpGet("{reservationId}/orders")]
+    public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersReservation(int reservationId)
+    {
+        if (!await _reservationRepository.IsReservationExists(reservationId))
+        {
+            return NotFound(new { Message = "Reservation not found." });
+        }
+
+        var orders = await _orderRepository.ListOrdersAndMenuItems(reservationId);
+
+        if (!orders.Any())
+        {
+            return Ok(new { message = "There is no orders for this reservation." });
+        }
+
+        return Ok(_mapper.Map<IEnumerable<OrderDto>>(orders));
+    }
+
     
 }
