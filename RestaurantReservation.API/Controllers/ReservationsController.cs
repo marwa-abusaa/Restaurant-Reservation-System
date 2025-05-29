@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantReservation.API.Models.MenuItems;
+using RestaurantReservation.API.Models.Orders;
 using RestaurantReservation.API.Models.Reservations;
 using RestaurantReservation.Db.Models;
 using RestaurantReservation.Db.Repositories;
@@ -13,13 +15,19 @@ public class ReservationsController : Controller
 {
     private readonly ReservationRepository _reservationRepository;
     private readonly RestaurantRepository _restaurantRepository;
+    private readonly CustomerRepository _customerRepository;
+    private readonly OrderRepository _orderRepository;
+    private readonly MenuItemRepository _menuItemRepository;
     private readonly IMapper _mapper;
 
-    public ReservationsController(IMapper mapper, ReservationRepository reservationRepository, RestaurantRepository restaurantRepository)
+    public ReservationsController(IMapper mapper, ReservationRepository reservationRepository, RestaurantRepository restaurantRepository, CustomerRepository customerRepository, OrderRepository orderRepository, MenuItemRepository menuItemRepository)
     {
         _reservationRepository = reservationRepository;
         _mapper = mapper;
         _restaurantRepository = restaurantRepository;
+        _customerRepository = customerRepository;
+        _orderRepository = orderRepository;
+        _menuItemRepository = menuItemRepository;
     }
 
     [HttpGet("{id}", Name = "GetReservation")]
@@ -96,4 +104,24 @@ public class ReservationsController : Controller
 
         return NoContent();
     }
+
+    [HttpGet("customer/{customerId}")]
+    public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservationsForCustomer(int customerId)
+    {
+        if (!await _customerRepository.IsCustomerExists(customerId))
+        {
+            return NotFound(new { Message = "Customer not found." });
+        }
+
+        var reservations = await _reservationRepository.GetReservationsByCustomer(customerId);
+
+        if (!reservations.Any())
+        {
+            return Ok(new { message = "This customer has no Reservations." });
+        }
+       
+        return Ok(_mapper.Map<IEnumerable<ReservationDto>>(reservations));
+    }
+
+    
 }
