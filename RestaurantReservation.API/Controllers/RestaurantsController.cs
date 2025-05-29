@@ -91,4 +91,17 @@ public class RestaurantsController : Controller
 
         return NoContent();
     }
+
+    [HttpGet("total-revenue/{restaurantId}")]
+    public async Task<IActionResult> GetTotalRestaurantRevenue(int restaurantId)
+    {
+        if (!await _restaurantRepository.IsRestaurantExists(restaurantId))
+        {
+            return NotFound(new { Message = "Restaurant not found." });
+        }
+
+        var totalRevenue = await _restaurantRepository.CalculateRestaurantRevenue(restaurantId);
+
+        return Ok(new { totalRevenue });
+    }
 }
