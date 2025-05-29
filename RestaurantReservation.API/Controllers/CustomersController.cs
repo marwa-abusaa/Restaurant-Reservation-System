@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantReservation.API.Models.Customers;
+using RestaurantReservation.API.Models.Paging;
+using RestaurantReservation.API.Services;
 using RestaurantReservation.Db.Models;
 using RestaurantReservation.Db.Repositories;
 
@@ -15,12 +17,39 @@ public class CustomersController : ControllerBase
 {
     private CustomerRepository _customerRepository;
     private readonly IMapper _mapper;
+    const int maxPageSize = 5;
 
     public CustomersController(IMapper mapper, CustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
         _mapper = mapper;
     }
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetACustomers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        if (pageNumber <= 0 || pageSize <= 0)
+            return BadRequest("Page and pageSize must be greater than zero.");
+
+        var query = _customerRepository.GetAll();
+
+        var pagedResult = await PaginationHelper<Customer>.GetPagedResult(query, pageNumber, pageSize, maxPageSize);
+
+        var pagedResultDto = new PagedResult<CustomerDto>
+        {
+            PageNumber = pagedResult.PageNumber,
+            PageSize = pagedResult.PageSize,
+            TotalCount = pagedResult.TotalCount,
+            TotalPages = pagedResult.TotalPages,
+            HasNextPage = pagedResult.HasNextPage,
+            HasPreviousPage = pagedResult.HasPreviousPage,
+            Items = _mapper.Map<List<CustomerDto>>(pagedResult.Items)
+        };
+
+        return Ok(pagedResultDto);
+    }
+
 
     [HttpGet("{id}", Name = "GetCustomer")]   
     public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
