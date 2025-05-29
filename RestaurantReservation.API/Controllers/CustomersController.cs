@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantReservation.API.Models.Customers;
+using RestaurantReservation.API.Models.Employees;
 using RestaurantReservation.Db.Models;
 using RestaurantReservation.Db.Repositories;
 
@@ -93,4 +94,15 @@ public class CustomersController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("reservations")]
+    public async Task<ActionResult<IEnumerable<CustomerDto>>> ListCustomersWithReservationsAbovePartySize([FromQuery] int minPartySize)
+    {
+        var customers = await _customerRepository.GetCustomersWithReservationsAbovePartySize(minPartySize);
+
+        if (!customers.Any())
+        {
+            return Ok(new { Message = $"No customers have made reservations with a party size greater than {minPartySize}" });
+        }
+        return Ok(_mapper.Map<IEnumerable<CustomerDto>>(customers));
+    }
 }
