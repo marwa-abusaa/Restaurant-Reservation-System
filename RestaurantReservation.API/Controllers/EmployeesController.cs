@@ -13,13 +13,15 @@ public class EmployeesController : Controller
 {
     private EmployeeRepository _employeeRepository;
     private RestaurantRepository _restaurantRepository;
+    private OrderRepository _orderRepository;
     private readonly IMapper _mapper;
 
-    public EmployeesController(IMapper mapper, EmployeeRepository employeeRepository, RestaurantRepository restaurantRepository)
+    public EmployeesController(IMapper mapper, EmployeeRepository employeeRepository, RestaurantRepository restaurantRepository, OrderRepository orderRepository)
     {
         _employeeRepository = employeeRepository;
         _restaurantRepository = restaurantRepository;
         _mapper = mapper;
+        _orderRepository = orderRepository;
     }
 
     [HttpGet("{id}", Name = "GetEmployee")]
@@ -104,5 +106,32 @@ public class EmployeesController : Controller
         await _employeeRepository.Update(existingEmployee);
 
         return NoContent();
+    }
+
+    [HttpGet("managers")]
+    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetManagers()
+    {
+        var managers = await _employeeRepository.ListManagers();
+        
+
+        return Ok(_mapper.Map<IEnumerable<EmployeeDto>>(managers));
+    }
+
+    [HttpGet("{employeeId}/average-order-amount")]
+    public async Task<IActionResult> GetAverageOrderAmount(int employeeId)
+    {
+        if (!await _employeeRepository.IsEmployeeExists(employeeId))
+        {
+            return NotFound(new { Message = "Employee not found." });
+        }
+
+        var averageOrderAmount = await _orderRepository.CalculateAverageOrderAmount(employeeId);
+
+        if (averageOrderAmount == 0)
+        {
+            return Ok(new { Message = "No orders found for the specified employee." });
+        }
+
+        return Ok(new { averageOrderAmount });
     }
 }
