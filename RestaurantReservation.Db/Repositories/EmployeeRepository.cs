@@ -25,4 +25,9 @@ public class EmployeeRepository : Repository<Employee>
     {
         return await _context.EmployeeWithRestaurantDetails.ToListAsync();
     }
+
+    public async Task<bool> IsEmployeeExists(int id)
+    {
+        return await _context.Employees.AnyAsync(e => e.EmployeeId == id);
+    }
 }

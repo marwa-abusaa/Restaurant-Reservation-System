@@ -22,4 +22,9 @@ public class RestaurantRepository : Repository<Restaurant>
 
         return result?.TotalRevenue ?? 0;
     }
+
+    public async Task<bool> IsRestaurantExists(int id)
+    {
+        return await _context.Restaurants.AnyAsync(r => r.RestaurantId == id);
+    }
 }
