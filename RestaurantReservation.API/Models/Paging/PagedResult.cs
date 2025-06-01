@@ -1,6 +1,6 @@
 ﻿namespace RestaurantReservation.API.Models.Paging;
 
-public class PagedResult<T>
+public class PagedResult<T>  where T : class
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
