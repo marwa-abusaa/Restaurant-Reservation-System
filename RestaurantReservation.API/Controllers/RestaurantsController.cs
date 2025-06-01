@@ -92,7 +92,7 @@ public class RestaurantsController : Controller
         return NoContent();
     }
 
-    [HttpGet("total-revenue/{restaurantId}")]
+    [HttpGet("{restaurantId}/total-revenue")]
     public async Task<IActionResult> GetTotalRestaurantRevenue(int restaurantId)
     {
         if (!await _restaurantRepository.IsRestaurantExists(restaurantId))
